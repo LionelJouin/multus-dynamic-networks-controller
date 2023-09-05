@@ -79,21 +79,21 @@ func setPodNetworkStatus(client kubernetes.Interface, pod *corev1.Pod, networkst
 	}
 
 	coreClient := client.CoreV1()
-	var err error
 	name := pod.Name
 	namespace := pod.Namespace
 
 	resultErr := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		pod, err = coreClient.Pods(namespace).Get(context.TODO(), name, metav1.GetOptions{})
+		p, err := coreClient.Pods(namespace).Get(context.TODO(), name, metav1.GetOptions{})
 		if err != nil {
 			return err
 		}
 
 		if len(pod.Annotations) == 0 {
-			pod.Annotations = make(map[string]string)
+			p.Annotations = make(map[string]string)
 		}
-		pod.Annotations[v1.NetworkStatusAnnot] = networkstatus
-		_, err = coreClient.Pods(namespace).UpdateStatus(context.TODO(), pod, metav1.UpdateOptions{})
+		p.Annotations[v1.NetworkStatusAnnot] = networkstatus
+		pod.Annotations = p.Annotations
+		_, err = coreClient.Pods(namespace).UpdateStatus(context.TODO(), p, metav1.UpdateOptions{})
 		return err
 	})
 	if resultErr != nil {

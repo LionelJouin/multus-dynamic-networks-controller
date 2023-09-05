@@ -243,7 +243,7 @@ func (pnc *PodNetworksController) processNextWorkItem() bool {
 			PodNetNS:    netnsPath,
 		})
 		if err != nil {
-			klog.Errorf("error removing attachments: %v")
+			klog.Errorf("error removing attachments: %v", err)
 			return true
 		}
 	}
@@ -465,10 +465,11 @@ func rejectInterfaceAddEventFormat(pod *corev1.Pod) string {
 }
 
 func interfaceAttributes(networkData nadv1.NetworkSelectionElement) *multusapi.DelegateInterfaceAttributes {
-	if len(networkData.IPRequest) > 0 || networkData.MacRequest != "" {
+	if len(networkData.IPRequest) > 0 || networkData.MacRequest != "" || networkData.CNIArgs != nil {
 		return &multusapi.DelegateInterfaceAttributes{
 			IPRequest:  networkData.IPRequest,
 			MacRequest: networkData.MacRequest,
+			CNIArgs:    networkData.CNIArgs,
 		}
 	}
 	return nil
