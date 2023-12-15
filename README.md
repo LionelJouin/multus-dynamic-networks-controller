@@ -170,3 +170,7 @@ e1db8da3c6267b3c2a5aca72ef8dd6a10b0ec9fd
 
 ## Known limitations
 - plug / unplug interfaces to networks requiring device-plugin interaction. We must investigate this further; an RFE **may** be opened once we have the required data.
+
+
+kubectl apply -f ~/Workspaces/k8snetworkplumbingwg/multus-cni/deployments/multus-daemonset-thick.yml ; \
+kubectl apply -f manifests/dynamic-networks-controller.yaml
