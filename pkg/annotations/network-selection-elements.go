@@ -150,6 +150,15 @@ func IndexPodNetworkSelectionElements(pod *corev1.Pod) map[string]nadv1.NetworkS
 	return indexedNetworkSelectionElements
 }
 
+func PodNetworkSelectionElements(pod *corev1.Pod) []nadv1.NetworkSelectionElement {
+	currentPodNetworkSelectionElements, err := networkSelectionElements(pod.GetAnnotations(), pod.GetNamespace())
+	if err != nil {
+		klog.Errorf("could not read pod's network selection elements: %v", *pod)
+		return []nadv1.NetworkSelectionElement{}
+	}
+	return currentPodNetworkSelectionElements
+}
+
 func networkSelectionElements(podAnnotations map[string]string, podNamespace string) ([]nadv1.NetworkSelectionElement, error) {
 	podNetworks, ok := podAnnotations[nadv1.NetworkAttachmentAnnot]
 	if !ok || podNetworks == "" {
