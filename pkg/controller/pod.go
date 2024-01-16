@@ -243,6 +243,9 @@ func (pnc *PodNetworksController) processNextWorkItem() bool {
 	// For troubleshooting and testing, having a deterministic behavior is preferred.
 	var attachmentsToRemove []nadv1.NetworkSelectionElement
 	for i := range networkStatus {
+		if networkStatus[i].Default {
+			continue
+		}
 		networkNamespace, networkName, _ := separateNamespaceAndName(annotations.NetworkStatusIndexKey(networkStatus[i]))
 		if _, wasFound := indexedNetworkSelectionElements[annotations.NetworkStatusIndexKey(networkStatus[i])]; !wasFound {
 			attachmentsToRemove = append(attachmentsToRemove, nadv1.NetworkSelectionElement{
